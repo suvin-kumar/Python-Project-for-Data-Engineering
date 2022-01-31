@@ -1,0 +1,71 @@
+#!pip install glob
+#!pip install pandas
+#!pip install requests
+#!pip install datetime
+
+import glob
+import pandas as pd
+from datetime import datetime
+
+!wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0221EN-SkillsNetwork/labs/module%206/Lab%20-%20Extract%20Transform%20Load/data/bank_market_cap_1.json
+!wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0221EN-SkillsNetwork/labs/module%206/Lab%20-%20Extract%20Transform%20Load/data/bank_market_cap_2.json
+!wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-PY0221EN-SkillsNetwork/labs/module%206/Final%20Assignment/exchange_rates.csv
+
+def extract_from_json(file_to_process):
+    dataframe = pd.read_json(file_to_process)
+    return dataframe
+    
+    columns=['Name','Market Cap (US$ Billion)']
+    
+    def extract():
+    return extract_from_json("bank_market_cap_1.json")[columns]
+    # Write your code here
+
+bank_market_cap = extract()
+bank_market_cap
+
+def transform(data):
+    data["Market Cap (GBP£ Billion)"] = round( (data["Market Cap (US$ Billion)"] * exchange_rate),3)
+    return data
+
+transform(bank_market_cap)
+
+def load(data : pd.DataFrame, filename : str):
+    data.to_csv(filename,index=False)
+    
+    def log(message : str,filename : str):
+    timestamp_format = '%H:%M:%S-%h-%d-%Y' #Hour-Minute-Second-MonthName-Day-Year
+    now = datetime.now() # get current timestamp
+    timestamp = now.strftime(timestamp_format)
+    with open(filename,"a") as f:
+        f.write(timestamp + ',' + message + '\n')
+    
+    # Write your code here
+log("ETL Job Started","log.txt")
+
+log("Extract phase Started","log.txt")
+
+# Call the function here
+bank_market_cap = extract()
+# Print the rows here
+bank_market_cap.head(5)
+
+# Write your code here
+log("Extract phase Ended","log.txt")
+
+# Call the function here
+transformed_data = transform(bank_market_cap)
+# Print the first 5 rows here
+transformed_data.head(5)
+
+# Write your code here
+log("Transform phase Ended","log.txt")
+
+# Write your code here
+log("Load phase Started","log.txt")
+
+# Write your code here
+final_data = load(transformed_data,"bank_market_cap_gbp.csv")
+
+# Write your code here
+log("Load phase Ended","log.txt")
